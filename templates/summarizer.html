@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Summarizer</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            display: flex;
+        }
+        .sidebar {
+            width: 200px;
+            background-color: #2c3e50;
+            color: white;
+            height: 100vh;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+        .sidebar a {
+            display: block;
+            padding: 10px;
+            color: white;
+            text-decoration: none;
+            margin-bottom: 10px;
+        }
+        .sidebar a:hover {
+            background-color: #34495e;
+        }
+        .content {
+            flex: 1;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+        .loading {
+            display: none;
+            font-size: 16px;
+            color: #2c3e50;
+        }
+    </style>
+</head>
+<body>
+    <div class="sidebar">
+        <a href="/">All Tools</a>
+        <a href="/summarizer">Summarizer</a>
+        <a href="/chatpdf">ChatPDF</a>
+        <a href="/github">GitHub</a>
+    </div>
+    <div class="content">
+        <h1>Summarizer</h1>
+        <div>
+            <input type="text" id="summarizer-link" placeholder="Enter link to summarize" style="width: 100%; padding: 10px; margin-bottom: 10px;">
+            <button id="summarize-btn">Submit</button>
+            <div id="summary-output" style="margin-top: 20px;"></div>
+            <div id="loading" class="loading">Summraizing...</div>
+        </div>
+    </div>
+    <script>
+        document.getElementById('summarize-btn').addEventListener('click', function() {
+            const link = document.getElementById('summarizer-link').value;
+            document.getElementById('loading').style.display = 'block';
+            fetch('/summarize', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded'
+                },
+                body: `link=${encodeURIComponent(link)}`
+            })
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('summary-output').innerHTML = data.summary;
+            })
+            .finally(() => {
+                document.getElementById('loading').style.display = 'none';
+            });
+        });
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+</body>
+</html>
